@@ -102,9 +102,10 @@ def list():
 		return jsonify(d),200
 	
 	if(request.method=='POST'):
-		if('categoryName' not in request.get_json().keys()):
-			return ('',400)
-		category_name = request.get_json()['categoryName']
+		# if('categoryName' not in request.get_json().keys()):
+		# 	return ('',400)
+		# print("cat", request.get_json())
+		category_name = request.get_json()[0]
 		if(not(os.path.exists("Database/categories.txt"))):
 			print('hello')
 			f = open("Database/categories.txt",'w')
@@ -257,7 +258,7 @@ def count_act(categoryName):
 @app.route("/api/v1/acts/upvote",methods=['POST'])
 def upvote():
 	if(request.method=='POST'):
-		actid=request.get_json()['actID']
+		actid=str(request.get_json()[0])
 		if(not(os.path.exists("Database/upvote.txt"))):
 			upvote_f = open("Database/upvote.txt",'w')
 			upvote_f.write("{}")

@@ -407,6 +407,7 @@ def upload_act():
 			#now create list for act id 
 			dict_value = {"username":username,"timestamp":timestamp,"caption":caption,"categoryName":categoryName,"imgB64":imgB64}
 			# l=[username,timestamp,caption,categoryName,imgB64]
+			
 			d[actId]=dict_value
 			upvote_d = {}
 			upvote_d = json.load(upvote_f)

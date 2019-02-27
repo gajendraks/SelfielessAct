@@ -1,5 +1,4 @@
 from flask import Flask, jsonify,render_template,flash,url_for,redirect,request
-from werkzeug import secure_filename
 import os
 import json
 import time
@@ -8,6 +7,7 @@ import csv
 import re
 import datetime
 import time
+from flask_cors import CORS
 
 def is_sha1(maybe_sha):
     if len(maybe_sha) != 40:
@@ -32,7 +32,9 @@ acts={}
 
 
 app= Flask(__name__)
-print(app)
+CORS(app)
+
+
 @app.route("/multi/<int:num>",methods=['GET'])
 def hello(num):
 	return jsonify({"about":"hello_world gajendra","result":num*10})

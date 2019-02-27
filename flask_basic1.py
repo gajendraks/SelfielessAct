@@ -9,6 +9,15 @@ import re
 import datetime
 import time
 
+def is_sha1(maybe_sha):
+    if len(maybe_sha) != 40:
+        return False
+    try:
+        sha_int = int(maybe_sha, 16)
+    except ValueError:
+        return False
+    return True
+
 def isTimeFormat(input):
     try:
 	    datetime.datetime.strptime(input[:input.find(":")], '%d-%m-%Y')
@@ -32,10 +41,22 @@ def hello(num):
 @app.route("/api/v1/users",methods=['POST'])
 def users_verify():
 	if(request.method=='POST'):
-		data = request.get_json(force=True)
-		print(len(request.get_json().keys()))
+		data = request.get_json()
+		print(type(data))
+
+		#if request is other than dictionary/json format
+		if(type(data)!= dict):
+			return('request error',400)
+		#if username and password does not exist in request
+		if(("username" not in data.keys()) or ("password" not in data.keys())):
+			return ('not there',400)
+		
 		usname = data["username"]
 		pword = data['password']
+
+		#checking password format is there in sha1 
+		if(not is_sha1(pword)):
+			return ('password',400)
 		
 		if(not(os.path.exists("Database/users.txt"))):
 			file_1 = open("Database/users.txt",'w')
@@ -85,7 +106,8 @@ def delete(username):
 # list all categories, add a category , remove a category
 @app.route("/api/v1/categories",methods = ['GET','POST'])
 def list():
-	print("Hello")
+
+	#list all categories
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"))):
 			f = open("Database/categories.txt",'w')
@@ -101,10 +123,12 @@ def list():
 			d[key] = len(d[key])
 		return jsonify(d),200
 	
+	#add a category
 	if(request.method=='POST'):
-		# if('categoryName' not in request.get_json().keys()):
-		# 	return ('',400)
-		# print("cat", request.get_json())
+
+		#if there are more than one entry in list
+		if(len(request.get_json())!=1):
+			return('length',400)
 		category_name = request.get_json()[0]
 		if(not(os.path.exists("Database/categories.txt"))):
 			print('hello')
@@ -128,40 +152,9 @@ def list():
 
 	return ('',405)
 
-""" # add category
-@app.route("/api/category/add",methods=['POST'])
-def add():
-	if(request.method=='POST'):
-		category_name = request.get_json()['categoryName']
-		if(not(os.path.exists("Database/categories.txt"))):
-			print('hello')
-			f = open("Database/categories.txt",'w')
-			f.write('{}')
-			f.close()
-			f = open("Database/categories.txt",'r+')
-		else:
-			f = open("Database/categories.txt",'r+')
-		d={}
-		d=json.load(f)
-		f.close()
-		if(category_name in d.keys()):
-			return('',400)
-		d[category_name]=[]
-		f = open("Database/categories.txt",'w')
-		json.dump(d,f)
-		f.close()
 
-		return ('',201)
-		
-		# if(os.path.exists("static/"+category_name)):
-		# 	# print("exists")
-		# 	return('',400)
-		# else:
-		# 	os.mkdir("static/"+category_name)
-		# 	return ('',200)
-
-	return ('',405) """
 	
+#remove a category
 @app.route("/api/v1/categories/<categoryName>",methods=['DELETE'])
 def remove(categoryName):
 	if(request.method=='DELETE'):
@@ -174,12 +167,35 @@ def remove(categoryName):
 		f.close()
 		if(categoryName not in d.keys()):
 			return('',400)
+		acts = d[categoryName]
 		d[categoryName]=[]
 		d.pop(categoryName)
 
 		f = open("Database/categories.txt",'w')
 		json.dump(d,f)
 		f.close()
+
+		acts_f = open("Database/acts.txt",'r+')
+		upvote_f = open("Database/upvote.txt",'r+')
+		acts_d={}
+		upvote_d={}
+		acts_d=json.load(acts_f)
+		upvote_d=json.load(acts_f)
+		acts_f.close()
+		upvote_f.close()
+		for actid in acts:
+			acts_d[actid]=[]
+			upvote_d[actid]=[]
+
+		acts_f = open("Database/acts.txt",'w')
+		upvote_f = open("Database/upvote.txt",'w')
+		json.dump(acts_d,acts_f)
+		json.dump(upvote_d,upvote_f)
+		acts_f.close()
+		upvote_f.close()
+
+		
+
 		return('',200)
 
 		
@@ -190,30 +206,61 @@ def remove(categoryName):
 # list acts for a give categoryname
 @app.route("/api/v1/categories/<categoryName>/acts",methods=['GET'])
 def list_acts(categoryName):
-	# print(categoryName)
+
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"	))):
-			print("doesnot exist")
 			return('Categories does not exist ',204)
 		category_f = open("Database/categories.txt",'r+')
 		cat_d={}
 		cat_d=json.load(category_f)
 		category_f.close()
 		if(categoryName not in cat_d.keys()):
-			return ('category doesnot exist',204)
+			return ('category doesnot exist',400)
 		acts_list = cat_d[categoryName]
-		if(request.args.get('start')!=None):
+		if(len(acts_list)==0):
+			return('No content',204)
+
+		# if arguments are passed
+		if(request.args.get('start')!=None and request.args.get('end')!=None):
 			st=request.args.get('start')
 			en=request.args.get('end')
 			st=int(st)
 			en=int(en)
-			out_list=[x for x in acts_list if st<=int(x)<=en]
+			acts_list=[x for x in acts_list if st<=int(x)<=en]
 			
+			#reverse chronological order of acts
+
+			acts_list = sorted(acts_list,reverse = True)
+			if(st<1 or en>len(acts_list)):
+				return('range',400)
+
+			if(len(acts_list)>100):
+				return('',413)
+			acts_f = open("Database/acts.txt",'r+')
+			acts_d = {}
+			acts_d = json.load(acts_f)
+			acts_f.close()
+			upvote_f = open("Database/upvote.txt",'r+')
+			upvote_d = {}
+			upvote_d = json.load(upvote_f)
+			upvote_f.close()
+			output = []
+			for actid in acts_list:
+				intermediate_dict = {}
+				intermediate_dict["actId"] = int(actid)
+				intermediate_dict.update(acts_d[actid])
+				intermediate_dict["upvotes"] = upvote_d[actid]
+				output.append(intermediate_dict)
+			return (jsonify(output),200)
+
+
 
 
 			
 			length = len(out_list)
 			return(jsonify(length),200) 
+
+		#List acts for a given category(if total length of acts is less than 100)
 		else:
 			if(len(acts_list)>100):
 				return('',413)
@@ -225,10 +272,13 @@ def list_acts(categoryName):
 			upvote_d = {}
 			upvote_d = json.load(upvote_f)
 			upvote_f.close()
-			output = {}
+			output = []
 			for actid in acts_list:
-				output[actid] = acts_d[actid]
-				output[actid]["upvotes"] = upvote_d[actid]
+				intermediate_dict = {}
+				intermediate_dict["actId"] = int(actid)
+				intermediate_dict.update(acts_d[actid])
+				intermediate_dict["upvotes"] = upvote_d[actid]
+				output.append(intermediate_dict)
 			return (jsonify(output),200)
 	else:
 		return('',405)
@@ -236,7 +286,6 @@ def list_acts(categoryName):
 # List number of acts for a given category
 @app.route("/api/v1/categories/<categoryName>/acts/size",methods=['GET'])
 def count_act(categoryName):
-	print(categoryName)
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"	))):
 			print("doesnot exist")
@@ -246,10 +295,12 @@ def count_act(categoryName):
 		cat_d=json.load(category_f)
 		category_f.close()
 		if(categoryName not in cat_d.keys()):
-			return ('category doesnot exist',204)
+			return ('category doesnot exist',204)#405 or 204
 		acts_list = cat_d[categoryName]
 		length = len(acts_list)
-		return(jsonify(length),200)
+		if(length == 0):
+			return('',204)
+		return(jsonify([length]),200)
 		
 	else:
 		return('',405)
@@ -292,6 +343,7 @@ def act_delete(actId):
 		category_name = d[actId]["categoryName"]	
 		d.pop(actId)
 		act_f.close()
+
 		act_f = open("Database/acts.txt",'w')
 		json.dump(d,act_f)
 		act_f.close()
@@ -336,7 +388,6 @@ def upload_act():
 		
 		
 		# if upvotes are present then send apprpriate code
-
 		if("upvotes" in input_keys):
 			return ('upvotes',400)
 
@@ -357,8 +408,10 @@ def upload_act():
 		d=json.load(acts_f)
 		acts_f.close()
 
-		# checking actid exist or not
+		if(type(actId)==int):
+			actId = str(actId)
 		
+		# checking actid exist or not
 		if(actId not in d.keys()):
 			#format checking for timestamp
 			if(not isTimeFormat(timestamp)):
@@ -381,6 +434,7 @@ def upload_act():
 				return('img',400) """
 			
 			
+
 			#checking for category name and opening category file
 			if(not(os.path.exists("Database/categories.txt"))):
 				return ('',400)
@@ -395,6 +449,7 @@ def upload_act():
 			json.dump(cat_d,cat_f)
 			cat_f.close()
 
+			#initialize upvote
 			if(not(os.path.exists("Database/upvote.txt"))):
 				upvote_f = open("Database/upvote.txt",'w')
 				upvote_f.write("{}")
@@ -407,7 +462,7 @@ def upload_act():
 			#now create list for act id 
 			dict_value = {"username":username,"timestamp":timestamp,"caption":caption,"categoryName":categoryName,"imgB64":imgB64}
 			# l=[username,timestamp,caption,categoryName,imgB64]
-			
+
 			d[actId]=dict_value
 			upvote_d = {}
 			upvote_d = json.load(upvote_f)

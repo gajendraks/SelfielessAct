@@ -44,7 +44,7 @@ def hello(num):
 def users_verify():
 	if(request.method=='POST'):
 		data = request.get_json()
-		print(type(data))
+		# print(type(data))
 
 		#if request is other than dictionary/json format
 		if(type(data)!= dict):
@@ -86,8 +86,6 @@ def users_verify():
 # Remove user
 @app.route("/api/v1/users/<username>",methods = ['DELETE'])
 def delete(username):
-	print(request.method)
-	# print(request.get_json()['caption'])
 	if(request.method=='DELETE'):
 		uname = username
 		if(not(os.path.exists("Database/users.txt"))):
@@ -133,7 +131,6 @@ def list():
 			return('length',400)
 		category_name = request.get_json()[0]
 		if(not(os.path.exists("Database/categories.txt"))):
-			print('hello')
 			f = open("Database/categories.txt",'w')
 			f.write('{}')
 			f.close()
@@ -211,16 +208,16 @@ def list_acts(categoryName):
 
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"	))):
-			return('Categories does not exist ',204)
+			return('',204)
 		category_f = open("Database/categories.txt",'r+')
 		cat_d={}
 		cat_d=json.load(category_f)
 		category_f.close()
 		if(categoryName not in cat_d.keys()):
-			return ('category doesnot exist',400)
+			return ('',400)
 		acts_list = cat_d[categoryName]
 		if(len(acts_list)==0):
-			return('No content',204)
+			return('',204)
 
 		# if arguments are passed
 		if(request.args.get('start')!=None and request.args.get('end')!=None):
@@ -234,7 +231,7 @@ def list_acts(categoryName):
 
 			acts_list = sorted(acts_list,reverse = True)
 			if(st<1 or en>len(acts_list)):
-				return('range',400)
+				return('',400)
 
 			if(len(acts_list)>100):
 				return('',413)
@@ -290,14 +287,14 @@ def list_acts(categoryName):
 def count_act(categoryName):
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"	))):
-			print("doesnot exist")
-			return('Categories does not exist ',204)
+			# print("doesnot exist")
+			return('',204)
 		category_f = open("Database/categories.txt",'r+')
 		cat_d={}
 		cat_d=json.load(category_f)
 		category_f.close()
 		if(categoryName not in cat_d.keys()):
-			return ('category doesnot exist',204)#405 or 204
+			return ('',204)#405 or 204
 		acts_list = cat_d[categoryName]
 		length = len(acts_list)
 		if(length == 0):
@@ -391,7 +388,7 @@ def upload_act():
 		
 		# if upvotes are present then send apprpriate code
 		if("upvotes" in input_keys):
-			return ('upvotes',400)
+			return ('',400)
 
 		# if acts.txt doesn't exist then create
 
@@ -417,7 +414,7 @@ def upload_act():
 		if(actId not in d.keys()):
 			#format checking for timestamp
 			if(not isTimeFormat(timestamp)):
-				return('time',400)
+				return('',400)
 
 
 			#checking if user exists and opening user file
@@ -426,14 +423,14 @@ def upload_act():
 			user_d = {}
 			user_d=json.load(user_f)
 			if(username not in user_d.keys()):
-				return('uname',400)
+				return('',400)
 			user_f.close()
 
 
-			#checking if image string matches with base64
+			# checking if image string matches with base64
 
-			""" if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
-				return('img',400) """
+			if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
+				return('',400)
 			
 			
 
@@ -445,7 +442,7 @@ def upload_act():
 			cat_d=json.load(cat_f)
 			cat_f.close()
 			if(categoryName not in cat_d.keys()):
-				return ('category',400)
+				return ('',400)
 			cat_d[categoryName].append(actId)
 			cat_f = open("Database/categories.txt",'w')
 			json.dump(cat_d,cat_f)
@@ -477,7 +474,7 @@ def upload_act():
 			f.close()
 			return ('',201)
 		else:
-			return ('actid',400)
+			return ('',400)
 
 	return ('',405)
 

@@ -430,7 +430,7 @@ def upload_act():
 			# checking if image string matches with base64
 
 			if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
-				return('',400)
+				return('image is not in base64',400)
 			
 			
 

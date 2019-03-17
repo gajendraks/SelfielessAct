@@ -1,0 +1,1 @@
+{"1": {"username": "Gaja", "timestamp": "21-04-1994:22-22-22", "caption": "OMG", "categoryName": "xyz", "imgB64": "asfkhsfjasdflasdlkjflk"}, "3": {"username": "Gaja", "timestamp": "21-04-1994:22-22-22", "imgB64": "asfkhsfjasdflasdlkjflk", "categoryName": "xyz", "caption": "OMG"}}

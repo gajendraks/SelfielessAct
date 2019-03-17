@@ -1,4 +1,5 @@
 from flask import Flask, jsonify,render_template,flash,url_for,redirect,request
+import requests
 import os
 import json
 import time
@@ -9,14 +10,6 @@ import datetime
 import time
 from flask_cors import CORS
 
-def is_sha1(maybe_sha):
-    if len(maybe_sha) != 40:
-        return False
-    try:
-        sha_int = int(maybe_sha, 16)
-    except ValueError:
-        return False
-    return True
 
 def isTimeFormat(input):
     try:
@@ -38,70 +31,6 @@ CORS(app)
 @app.route("/multi/<int:num>",methods=['GET'])
 def hello(num):
 	return jsonify({"about":"hello_world gajendra","result":num*10})
-
-# Add user
-@app.route("/api/v1/users",methods=['POST'])
-def users_verify():
-	if(request.method=='POST'):
-		data = request.get_json()
-		# print(type(data))
-
-		#if request is other than dictionary/json format
-		if(type(data)!= dict):
-			return('request error',400)
-		#if username and password does not exist in request
-		if(("username" not in data.keys()) or ("password" not in data.keys())):
-			return ('not there',400)
-		
-		usname = data["username"]
-		pword = data['password']
-
-		#checking password format is there in sha1 
-		if(not is_sha1(pword)):
-			return ('password',400)
-		
-		if(not(os.path.exists("Database/users.txt"))):
-			file_1 = open("Database/users.txt",'w')
-			file_1.write("{}")
-			# file_1.seek(0)
-			file_1.close()
-			file_1 = open("Database/users.txt",'r+')
-		else:
-			file_1 = open("Database/users.txt",'r+')
-		
-		d={}
-		d=json.load(file_1)
-		file_1.close()
-		if(usname in d.keys()):
-			return ('',400)
-		# d.seek()
-		d[usname]=pword
-		file_1 = open("Database/users.txt",'w')
-		json.dump(d,file_1)
-		file_1.close()
-		return ('',201)
-	return ('',405)
-
-	
-# Remove user
-@app.route("/api/v1/users/<username>",methods = ['DELETE'])
-def delete(username):
-	if(request.method=='DELETE'):
-		uname = username
-		if(not(os.path.exists("Database/users.txt"))):
-			return('',400)
-		file_1 = open("Database/users.txt",'r+')
-		d={}
-		d=json.load(file_1)
-		if(not(uname in d.keys())):
-			return ('',400)
-		d.pop(uname)
-		file_1.close()
-		file_1 = open("Database/users.txt",'w')
-		json.dump(d,file_1)
-		file_1.close()
-		return ('',200)
-	return ('',405)
 
 # list all categories, add a category , remove a category
 @app.route("/api/v1/categories",methods = ['GET','POST'])
@@ -256,8 +185,6 @@ def list_acts(categoryName):
 
 
 			
-			length = len(out_list)
-			return(jsonify(length),200) 
 
 		#List acts for a given category(if total length of acts is less than 100)
 		else:
@@ -376,7 +303,7 @@ def upload_act():
 	if(request.method=='POST'):
 		
 		# taking input from form data
-
+		print("Hello")
 		actId = request.get_json()['actId']
 		username = request.get_json()['username']
 		timestamp = request.get_json()['timestamp']
@@ -388,7 +315,7 @@ def upload_act():
 		
 		# if upvotes are present then send apprpriate code
 		if("upvotes" in input_keys):
-			return ('',400)
+			return ('upvotes',400)
 
 		# if acts.txt doesn't exist then create
 
@@ -414,35 +341,35 @@ def upload_act():
 		if(actId not in d.keys()):
 			#format checking for timestamp
 			if(not isTimeFormat(timestamp)):
-				return('',400)
+				return('time',400)
 
 
 			#checking if user exists and opening user file
 
-			user_f = open("Database/users.txt",'r+')
-			user_d = {}
-			user_d=json.load(user_f)
-			if(username not in user_d.keys()):
-				return('',400)
-			user_f.close()
+			url="http://USER_IP:5000/api/v1/users"
+			r = requests.get(url)
+			data=r.json()
+			print(data)
+			if(username not in data):
+				return('username',400)
 
 
 			# checking if image string matches with base64
 
 			if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
-				return('image is not in base64',400)
+			 	return('image is not in base64',400)
 			
 			
 
 			#checking for category name and opening category file
 			if(not(os.path.exists("Database/categories.txt"))):
-				return ('',400)
+				return ('categoris',400)
 			cat_f = open("Database/categories.txt",'r+')
 			cat_d = {}
 			cat_d=json.load(cat_f)
 			cat_f.close()
 			if(categoryName not in cat_d.keys()):
-				return ('',400)
+				return ('categories',400)
 			cat_d[categoryName].append(actId)
 			cat_f = open("Database/categories.txt",'w')
 			json.dump(cat_d,cat_f)
@@ -474,17 +401,19 @@ def upload_act():
 			f.close()
 			return ('',201)
 		else:
-			return ('',400)
+			return ('actid',400)
 
 	return ('',405)
 
+# @app.route("/api/v1/check",methods = ['GET'])
+# def check():
+# 	url="http://localhost:5000/multi/10"
+# 	r = requests.get(url)
+# 	data=r.json()
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+# 	print(data)
 
-
-
+# 	return ('',200)
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True,host="0.0.0.0",port=12345)

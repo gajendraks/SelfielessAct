@@ -76,13 +76,13 @@ def list():
 		json.dump(d,f)
 		f.close()
 
-		return ('',201)
+		return (jsonify(category_name),201)
 
 	return ('',405)
 
 
 	
-#remove a category
+#re`move a category
 @app.route("/api/v1/categories/<categoryName>",methods=['DELETE'])
 def remove(categoryName):
 	if(request.method=='DELETE'):
@@ -103,12 +103,14 @@ def remove(categoryName):
 		json.dump(d,f)
 		f.close()
 
+		if(len(acts)==0):
+			return('',200)
 		acts_f = open("Database/acts.txt",'r+')
 		upvote_f = open("Database/upvote.txt",'r+')
 		acts_d={}
 		upvote_d={}
 		acts_d=json.load(acts_f)
-		upvote_d=json.load(acts_f)
+		upvote_d=json.load(upvote_f)
 		acts_f.close()
 		upvote_f.close()
 		for actid in acts:
@@ -337,6 +339,13 @@ def upload_act():
 		if(type(actId)==int):
 			actId = str(actId)
 		
+		url="http://52.66.205.229:8080/api/v1/users"
+		r = requests.get(url)
+		data=r.json()
+		print(data)
+		if(username not in data):
+			return('username',400)
+
 		# checking actid exist or not
 		if(actId not in d.keys()):
 			#format checking for timestamp
@@ -346,12 +355,12 @@ def upload_act():
 
 			#checking if user exists and opening user file
 
-			url="http://USER_IP:5000/api/v1/users"
-			r = requests.get(url)
-			data=r.json()
-			print(data)
-			if(username not in data):
-				return('username',400)
+			# url="http://USER_IP:5000/api/v1/users"
+			# r = requests.get(url)
+			# data=r.json()
+			# print(data)
+			# if(username not in data):
+			# 	return('username',400)
 
 
 			# checking if image string matches with base64
@@ -399,6 +408,7 @@ def upload_act():
 			f = open("Database/acts.txt",'w')
 			json.dump(d,f)
 			f.close()
+			upvote_f.close()
 			return ('',201)
 		else:
 			return ('actid',400)

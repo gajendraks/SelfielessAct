@@ -173,7 +173,7 @@ def list():
 
 
 	
-#remove a category
+#re`move a category
 @app.route("/api/v1/categories/<categoryName>",methods=['DELETE'])
 def remove(categoryName):
 	if(request.method=='DELETE'):
@@ -194,12 +194,14 @@ def remove(categoryName):
 		json.dump(d,f)
 		f.close()
 
+		if(len(acts)==0):
+			return('',200)
 		acts_f = open("Database/acts.txt",'r+')
 		upvote_f = open("Database/upvote.txt",'r+')
 		acts_d={}
 		upvote_d={}
 		acts_d=json.load(acts_f)
-		upvote_d=json.load(acts_f)
+		upvote_d=json.load(upvote_f)
 		acts_f.close()
 		upvote_f.close()
 		for actid in acts:
@@ -219,7 +221,6 @@ def remove(categoryName):
 
 		
 	return ('',405)
-
 
 
 # list acts for a give categoryname

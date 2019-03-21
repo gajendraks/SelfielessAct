@@ -428,6 +428,14 @@ def upload_act():
 		if(type(actId)==int):
 			actId = str(actId)
 		
+		# checking if user exists and opening user file before checking the act 
+		user_f = open("Database/users.txt",'r+')
+		user_d = {}
+		user_d=json.load(user_f)
+		if(username not in user_d.keys()):
+			return('',400)
+		user_f.close()
+
 		# checking actid exist or not
 		if(actId not in d.keys()):
 			#format checking for timestamp
@@ -437,12 +445,12 @@ def upload_act():
 
 			#checking if user exists and opening user file
 
-			user_f = open("Database/users.txt",'r+')
-			user_d = {}
-			user_d=json.load(user_f)
-			if(username not in user_d.keys()):
-				return('',400)
-			user_f.close()
+			# user_f = open("Database/users.txt",'r+')
+			# user_d = {}
+			# user_d=json.load(user_f)
+			# if(username not in user_d.keys()):
+			# 	return('',400)
+			# user_f.close()
 
 
 			# checking if image string matches with base64

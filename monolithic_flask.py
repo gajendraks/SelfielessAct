@@ -92,8 +92,8 @@ def users_verify():
 		d={}
 		d=json.load(file_1)
 		file_1.close()
-
-		return (jsonify(d.keys()),200)		
+		l=list(d.keys())
+		return (jsonify(l),200)		
 
 	return ('',405)
 
@@ -125,23 +125,22 @@ def delete(username):
 
 # list all categories, add a category , remove a category
 @app.route("/api/v1/categories",methods = ['GET','POST'])
-def list():
+def categories():
 
 	#list all categories
 	if(request.method=='GET'):
 		if(not(os.path.exists("Database/categories.txt"))):
-			f = open("Database/categories.txt",'w')
-			f.write('{}')
-			f.close()
-			f = open("Database/categories.txt",'r+')
+			return('',204)
 		else:
 			f = open("Database/categories.txt",'r+')
 		d={}
 		d=json.load(f)
 		f.close()
+		if(len(d.keys())==0):
+			return ('',204)
 		for key in d.keys():
 			d[key] = len(d[key])
-		return jsonify(d),200
+		return (jsonify(d),200)
 	
 	#add a category
 	if(request.method=='POST'):
@@ -246,7 +245,7 @@ def list_acts(categoryName):
 			en=request.args.get('end')
 			st=int(st)
 			en=int(en)
-			acts_list=[x for x in acts_list if st<=int(x)<=en]
+			# acts_list=[x for x in acts_list if st<=int(x)<=en]
 			
 			#reverse chronological order of acts
 
@@ -256,6 +255,9 @@ def list_acts(categoryName):
 
 			if(len(acts_list)>100):
 				return('',413)
+			
+			acts_list_out = acts_list[st-1:en]
+
 			acts_f = open("Database/acts.txt",'r+')
 			acts_d = {}
 			acts_d = json.load(acts_f)
@@ -265,7 +267,7 @@ def list_acts(categoryName):
 			upvote_d = json.load(upvote_f)
 			upvote_f.close()
 			output = []
-			for actid in acts_list:
+			for actid in acts_list_out:
 				intermediate_dict = {}
 				intermediate_dict["actId"] = int(actid)
 				intermediate_dict.update(acts_d[actid])
@@ -393,6 +395,10 @@ def act_delete(actId):
 def upload_act():
 	if(request.method=='POST'):
 		
+		inputs=["username",'actId','timestamp','caption','categoryName','imgB64']
+		if(not set(inputs).issubset(set(request.get_json().keys()))):
+			return ('not there',400)
+
 		# taking input from form data
 
 		actId = request.get_json()['actId']
@@ -505,12 +511,12 @@ def upload_act():
 	return ('',405)
 
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+# @app.errorhandler(404)
+# def page_not_found(error):
+#     return render_template('page_not_found.html'), 404
 
 
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True,host="0.0.0.0")

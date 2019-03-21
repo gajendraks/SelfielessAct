@@ -34,7 +34,7 @@ def hello(num):
 
 # list all categories, add a category , remove a category
 @app.route("/api/v1/categories",methods = ['GET','POST'])
-def list():
+def categories():
 
 	#list all categories
 	if(request.method=='GET'):

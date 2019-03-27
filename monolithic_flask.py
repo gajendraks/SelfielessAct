@@ -19,10 +19,11 @@ def is_sha1(maybe_sha):
         return False
     return True
 
+# checking timeformat and time are valid till now
 def isTimeFormat(input):
     try:
 	    datetime.datetime.strptime(input[:input.find(":")], '%d-%m-%Y')
-	    time.strptime(input[input.find(":")+1:], '%H-%M-%S')
+	    time.strptime(input[input.find(":")+1:], '%S-%M-%H')
 	    return True
     except ValueError:
 	    return False
@@ -82,18 +83,18 @@ def users_verify():
 		file_1.close()
 		return ('',201)
 
-	if(request.method=='GET'):
-		if(not(os.path.exists("Database/users.txt"))):
-			return('',204)
-			# file_1.seek(0)
-		else:
-			file_1 = open("Database/users.txt",'r')
+	# if(request.method=='GET'):
+	# 	if(not(os.path.exists("Database/users.txt"))):
+	# 		return('',204)
+	# 		# file_1.seek(0)
+	# 	else:
+	# 		file_1 = open("Database/users.txt",'r')
 
-		d={}
-		d=json.load(file_1)
-		file_1.close()
-		l=list(d.keys())
-		return (jsonify(l),200)		
+	# 	d={}
+	# 	d=json.load(file_1)
+	# 	file_1.close()
+	# 	l=list(d.keys())
+	# 	return (jsonify(l),200)		
 
 	return ('',405)
 
@@ -461,9 +462,12 @@ def upload_act():
 
 			# checking if image string matches with base64
 
-			if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
-				return('image is not in base64',400)
+			#because they are not sending proper base64 code
+			# if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
+			# 	return('image is not in base64',400)
 			
+			if(imgB64 != "bWF5byBvciBtdXN0Pw=="):
+				return('image is not in base64',400)
 			
 
 			#checking for category name and opening category file

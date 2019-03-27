@@ -69,19 +69,21 @@ body {font-size:16px;}
       </div>
       <form class="email-login">
         <div class="u-form-group">
-          <input type="text" id="Username" placeholder="User Name"/>
+          <input type="text" class="form-control" id="reg_username" placeholder="Enter username" name="username">
         </div>
         <div class="u-form-group">
-          <input type="password" id="strex" placeholder="Password"/>
+          <input type="password" class="form-control" id="reg_pwd" placeholder="Enter password" name="password">
         </div>
         <div class="u-form-group">
-          <button id="cryptstr">Log in</button>
-          <input type="hidden" id="strcrypt">
+          <a class="btn btn-default btn-lg" onclick="register()">Submit</a>
         </div>
-        <div class="u-form-group">
+        <div class="form-group success" id="success">
+          <p>Operation Successful!</p>
+        </div>
+        <!-- <div class="u-form-group">
           <p>Remove your account? <a href="l.html" class="forgot-password">Delete</a>.</p>
           <p id="alert"></p>
-        </div>
+        </div> -->
       </form>
       <form class="email-signup">
         <div class="u-form-group">

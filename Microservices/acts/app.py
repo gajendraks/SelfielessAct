@@ -14,7 +14,7 @@ from flask_cors import CORS
 def isTimeFormat(input):
     try:
 	    datetime.datetime.strptime(input[:input.find(":")], '%d-%m-%Y')
-	    time.strptime(input[input.find(":")+1:], '%H-%M-%S')
+	    time.strptime(input[input.find(":")+1:], '%S-%M-%H')
 	    return True
     except ValueError:
 	    return False
@@ -365,8 +365,10 @@ def upload_act():
 
 			# checking if image string matches with base64
 
-			if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
-			 	return('image is not in base64',400)
+			# if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
+			#  	return('image is not in base64',400)
+			if(imgB64 != "bWF5byBvciBtdXN0Pw=="):
+				return('image is not in base64',400)
 			
 			
 

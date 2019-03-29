@@ -30,9 +30,14 @@ body {font-size:16px;}
     <h3 class="w3-padding-64"><b>SelfieLess<br>Act</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a  onclick="w3_close_home()" class="w3-bar-item w3-button w3-hover-white">Home</a> 
-    <a  onclick="w3_close_login()" class="w3-bar-item w3-button w3-hover-white">Login</a> 
-    <a  onclick="w3_close_about()" class="w3-bar-item w3-button w3-hover-white">About</a> 
+    <a  onclick="p_home()" class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a  onclick="p_register()" class="w3-bar-item w3-button w3-hover-white">Register</a> 
+    <a  onclick="p_delete_user()" class="w3-bar-item w3-button w3-hover-white">Delete User</a> 
+    <a  onclick="p_categories()" class="w3-bar-item w3-button w3-hover-white">Categories</a> 
+    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">List Acts</a> 
+    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">Upload an Act</a> 
+    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">Upvote an Act</a> 
+    <a  onclick="p_about()" class="w3-bar-item w3-button w3-hover-white">About</a> 
   </div>
 </nav>
 
@@ -49,23 +54,27 @@ body {font-size:16px;}
 <div class="w3-main" id="Home_content" style="margin-left:340px;margin-right:40px">
 
   <!-- Header -->
-  <div class="w3-container" style="margin-top:80px" id="showcase">
-    <h1 class="w3-jumbo"><b>Welcome to selflessact</b></h1>
-    <h1 class="w3-xxxlarge w3-text-red"><b>Gallery</b></h1>
-    <hr style="width:50px;border:5px solid red" class="w3-round">
+  <div class="w3-container" style="margin-top:80px" id="body">
+    
   </div>
   
   
 <!-- End page content -->
 </div>
 
+<!-- This div is for Home page -->
+<div id="home" >
+  <h1>Introduction</h1>
+</div>
+
+
 <!-- This is for Login form -->
-<div class="w3-main " id="Login_content" style="margin-left:340px;margin-right:40px;display:none">
+<div class="w3-main " id="id_register" style="margin-left:340px;margin-right:40px;display:none">
 
   <div class="login-box">
       <div class="lb-header">
         <!-- <a class="active" id="login-box-link" >Login</a> -->
-        <a id="signup-box-link" >Sign Up</a>
+        <h4 id="signup-box-link">Register</h4>
       </div>
       <form class="email-login">
         <div class="u-form-group">
@@ -75,37 +84,93 @@ body {font-size:16px;}
           <input type="password" class="form-control" id="reg_pwd" placeholder="Enter password" name="password">
         </div>
         <div class="u-form-group">
-          <a class="btn btn-default btn-lg" onclick="register()">Submit</a>
+          <a type=submit class="btn btn-default btn-lg" onclick="register()">Submit</a>
         </div>
         <div class="form-group success" id="success">
           <p>Operation Successful!</p>
         </div>
+      </form>
         <!-- <div class="u-form-group">
           <p>Remove your account? <a href="l.html" class="forgot-password">Delete</a>.</p>
           <p id="alert"></p>
         </div> -->
-      </form>
-      <form class="email-signup">
-        <div class="u-form-group">
-          <input type="text" id="Username" placeholder="User Name"/>
-        </div>
-        <div class="u-form-group">
-          <input type="text" id="strex" placeholder="Password"/>
-        </div>
-        <div class="u-form-group">
-          <input type="password" id="strex" placeholder="Confirm Password"/>
-        </div>
-        <div class="u-form-group">
-          <button id="cryptstr">Sign Up</button>
-          <input type="hidden" id="strcrypt">
-        </div>
-      </form>
   </div>
+<div>
+
+<!-- this for deleting user -->
+<div class="w3-main " id="delete_user" style="margin-left:340px;margin-right:40px;display:none">
+  
+    <div class="lb-header">
+        <!-- <a class="active" id="login-box-link" >Login</a> -->
+        <h4 id="signup-box-link">Delete User</h4>
+      </div>
+  <form class="email-login">
+      <div class="u-form-group">
+          <input type="text" class="form-control" id="del_username" placeholder="Enter username" name="username">
+      </div>
+      <div class="u-form-group">
+        <a type=submit class="btn btn-default btn-lg" onclick="delete_user()">Submit</a>
+      </div>
+      <div class="form-group success" id="success">
+        <p>Operation Successful!</p>
+      </div>
+  </form>
 
 </div>
 
+
+
+<!-- THis for categories -->
+
+<div class="w3-main " id="categories" style="margin-left:340px;margin-right:40px;display:none">
+  
+    <div class="lb-header">
+      <!-- <a class="active" id="login-box-link" >Login</a> -->
+      <h3>Add a category</h3>
+    </div>
+    <form class="email-login">
+        <div class="u-form-group">
+            <input type="text" class="form-control" id="category_name" placeholder="Enter CategoryName" name="category_name">
+        </div>
+        <div class="u-form-group">
+          <a type=submit class="btn btn-default btn-lg" onclick="add_category()">Submit</a>
+        </div>
+        <div class="form-group success" id="add_cat_success" style="display:none">
+          <p>Operation Successful!</p>
+        </div>
+    </form>
+    
+
+    <div class="header">
+        <!-- <a class="active" id="login-box-link" >Login</a> -->
+        <h3 style="text-align:center;color:blue">Remove a category</h3>
+      </div>
+      <form class="email-login">
+          <div class="u-form-group">
+              <input type="text" class="form-control" id="remove_category_name" placeholder="Enter CategoryName to remove" name="category_name">
+          </div>
+          <div class="u-form-group">
+            <a type=submit class="btn btn-default btn-lg" onclick="remove_category()">Submit</a>
+          </div>
+          <div class="form-group success" id="remove_cat_success" style="display:none">
+            <p>Operation Successful!</p>
+          </div>
+      </form>
+  
+      <div style="text-align:center">
+      <a type="submit" class="btn btn-default btn-lg" style="color:black;background-color:cyan" id="show" onclick="list_categories()">List all categories</a>
+      <div class="form-group success" id="success" style="display:none">
+        <p>list appears here</p>
+      </div>
+    </div>
+
+
+</div>
+
+
+
 <!-- About content -->
-<div class="w3-main" id="About_content" style="margin-left:340px;margin-right:40px;display:none">
+<div class="w3-main" id="about" style="margin-left:340px;margin-right:40px;display:none">
 	<h1>About Page</h1>
 </div>
 
@@ -128,28 +193,24 @@ function w3_open() {
   document.getElementById("myOverlay").style.display = "block";
 }
  
-function w3_close_home() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-	document.getElementById("Home_content").style.display = "block";
-	document.getElementById("Login_content").style.display = "none";
-	document.getElementById("About_content").style.display = "none";
+function p_home() {
+  document.getElementById("body").innerHTML = document.getElementById("home").innerHTML;
 }
 
-function w3_close_login() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-	document.getElementById("Home_content").style.display = "none";
-	document.getElementById("About_content").style.display = "none";
-	document.getElementById("Login_content").style.display = "block";
+function p_register() {
+  document.getElementById("body").innerHTML = document.getElementById("id_register").innerHTML;
 }
 
-function w3_close_about() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-	document.getElementById("Home_content").style.display = "none";
-	document.getElementById("Login_content").style.display = "none";
-	document.getElementById("About_content").style.display = "block";
+function p_delete_user() {
+	document.getElementById("body").innerHTML = document.getElementById("delete_user").innerHTML;
+}
+
+function p_categories() {
+	document.getElementById("body").innerHTML = document.getElementById("categories").innerHTML;
+}
+
+function p_about() {
+  document.getElementById("body").innerHTML = document.getElementById("about").innerHTML;
 }
 
 

@@ -254,7 +254,7 @@ def list_acts(categoryName):
 			if(st<1 or en>len(acts_list)):
 				return('',400)
 
-			if(len(acts_list)>100):
+			if((en-st+1)>100):
 				return('',413)
 			
 			acts_list_out = acts_list[st-1:en]

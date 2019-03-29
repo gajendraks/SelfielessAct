@@ -1,86 +1,4 @@
-// // ========= Login ==========
-
-// $(document).ready(function(){
-//     $('.email-login').on('submit',function(event){
-//         var pass = $('#strex').val();
-//         var hash = CryptoJS.SHA1(pass);
-//         var result = CryptoJS.enc.Hex.stringify(hash);
-//         console.log(result)
-//         $.ajax({
-//             data : {
-//                 "username" : str($('#Username').val()),
-//                 "password" : str(result)
-//             },
-//             type : 'POST',
-//             datatype: "json",
-//             traditional: true,
-//             contentType: "application/json; charset=utf-8",
-//             url : "http://127.0.0.1:5000/api/v1/users"
-
-//         })
-//         .done(function(data){
-//             alert(data)
-//         });
-//         event.preventDefault();
-//     });
-// });
-
-// // ========= Sign Up ===========
-// $(document).ready(function(){
-//     $('.email-signup').on('submit',function(event){
-//         var pass = $('#strex').val();
-//         var hash = CryptoJS.SHA1(pass);
-//         var result = CryptoJS.enc.Hex.stringify(hash);
-//         // console.log(result)
-//         $.ajax({
-//             data : {
-//                 username : $('#Username').val(),
-//                 password : result
-//             },
-//             type : 'POST',
-//             datatype: "json",
-//             traditional: true,
-//             contentType: "application/json; charset=utf-8",
-//             url : "http://:5000/api/v1/users"
-
-//         })
-//         .done(function(data){
-//             alert(data)
-//         });
-//         event.preventDefault();
-//     });
-// });
-
-// // =============Delete============
-// // $(document).ready(function(){
-// //     $('.email-signup').on('submit',function(event){
-// //         var pass = $('#strex').val();
-// //         var hash = CryptoJS.SHA1(pass);
-// //         var result = CryptoJS.enc.Hex.stringify(hash);
-// //         console.log(result)
-// //         $.ajax({
-// //             data : {
-// //                 username : $('#Username').val(),
-// //                 password : result
-// //             },
-// //             type : 'POST',
-// //             datatype: "json",
-// //             traditional: true,
-// //             contentType: "application/json; charset=utf-8",
-// //             url : "http://127.0.0.1.:5000/api/v1/users"
-
-// //         })
-// //         .done(function(data){
-// //             console.log(data.message)
-// //         });
-// //         event.preventDefault();
-// //     });
-// // });
-
-
-
-
-var link="http://52.66.205.229:5000";
+var link="http://localhost:5000";
 
 function SHA1 (msg) {
     function rotate_left(n,s) {
@@ -255,6 +173,123 @@ function SHA1 (msg) {
     xhttp.send(data);
   }
 
-  
+
+  function delete_user()
+  {
+      var username = document.getElementById("del_username").value;
+      var url = link+"/api/v1/users/"+username
+    
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange=function() {
+          if(this.readyState==4){
+              console.log(this.status);
+
+              if (this.status==200)
+              {
+                  var success = document.getElementById('success');
+                  success.innerHTML="Operation Successful";
+                  success.style.display="block";
+              }
+              else
+              {
+                var success = document.getElementById('success');
+                success.innerHTML="Operation Not Successful";
+                success.style.display="block";
+              }
+          }
+      };
+      
+      xhttp.open("DELETE",url,true);
+      xhttp.send();
+  }
+
+  function add_category()
+  {
+      var cat_name = document.getElementById("category_name").value;
+      var url = link+"/api/v1/categories"
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange=function() {
+          if(this.readyState==4){
+              console.log(this.status);
+            //   var json = JSON.parse(xhttp.responseText);
+            //   console.log(json);
+
+              if (this.status==201)
+              {
+                  var success = document.getElementById('add_cat_success');
+                  success.innerHTML="Operation Successful";
+                  success.style.display="block";
+              }
+              else
+              {
+                var success = document.getElementById('add_cat_success');
+                success.innerHTML="Operation Not Successful";
+                success.style.display="block";
+              }
+          }
+    };
+      
+    xhttp.open("POST",url,true);
+    xhttp.setRequestHeader("Content-Type","application/json");
+    var data=JSON.stringify([cat_name]);
+    console.log(data);
+    xhttp.send(data);
+
+  }
+
+  function remove_category()
+  {
+      var cat_name = document.getElementById("remove_category_name").value;
+      var url = link+"/api/v1/categories/"+cat_name;
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange=function() {
+          if(this.readyState==4){
+              console.log(this.status);
+
+              if (this.status==200)
+              {
+                  var success = document.getElementById('remove_cat_success');
+                  success.innerHTML="Operation Successful";
+                  success.style.display="block";
+              }
+              else
+              {
+                var success = document.getElementById('remove_cat_success');
+                success.innerHTML="Operation Not Successful";
+                success.style.display="block";
+              }
+          }
+      };
+      xhttp.open("DELETE",url,true);
+      xhttp.send();
+  }
+
+  function list_categories()
+  {
+    var url = link+"/api/v1/categories";
+
+    var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange=function() {
+          if(this.readyState==4){
+              console.log(this.status);
+
+              if (this.status==200)
+              {
+                  var success = document.getElementById('success');
+                  success.innerHTML=this.responseText
+                  success.style.display="block";
+              }
+              else
+              {
+                var success = document.getElementById('success');
+                success.innerHTML="Operation Not Successful";
+                success.style.display="block";
+              }
+          }
+      };
+      xhttp.open("GET",url,true);
+      xhttp.send();
 
   }

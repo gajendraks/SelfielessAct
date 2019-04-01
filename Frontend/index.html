@@ -16,7 +16,7 @@
 <script src="test.js"></script>
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
-body {font-size:16px;}
+body {font-size:16px;background-color:dimgray}
 .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
 .w3-half img:hover{opacity:1}
 </style>
@@ -24,19 +24,18 @@ body {font-size:16px;}
 <body>
 
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+<nav class="w3-sidebar w3-blue-gray w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
   <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
   <div class="w3-container">
-    <h3 class="w3-padding-64"><b>SelfieLess<br>Act</b></h3>
+    <h3 class="w3-padding-64 heading"><b>SelfieLess<br>Act</b></h3>
   </div>
   <div class="w3-bar-block">
     <a  onclick="p_home()" class="w3-bar-item w3-button w3-hover-white">Home</a> 
     <a  onclick="p_register()" class="w3-bar-item w3-button w3-hover-white">Register</a> 
     <a  onclick="p_delete_user()" class="w3-bar-item w3-button w3-hover-white">Delete User</a> 
     <a  onclick="p_categories()" class="w3-bar-item w3-button w3-hover-white">Categories</a> 
-    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">List Acts</a> 
-    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">Upload an Act</a> 
-    <a  onclick="" class="w3-bar-item w3-button w3-hover-white">Upvote an Act</a> 
+    <a  onclick="p_list_acts()" class="w3-bar-item w3-button w3-hover-white">List Acts</a> 
+    <a  onclick="p_upload_act()" class="w3-bar-item w3-button w3-hover-white">Acts</a> 
     <a  onclick="p_about()" class="w3-bar-item w3-button w3-hover-white">About</a> 
   </div>
 </nav>
@@ -51,7 +50,7 @@ body {font-size:16px;}
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" id="Home_content" style="margin-left:340px;margin-right:40px">
+<div class="w3-main" id="Home_content" style="margin-left:340px;margin-right:40px;">
 
   <!-- Header -->
   <div class="w3-container" style="margin-top:80px" id="body">
@@ -63,8 +62,9 @@ body {font-size:16px;}
 </div>
 
 <!-- This div is for Home page -->
-<div id="home" >
-  <h1>Introduction</h1>
+<div id="home" style="display:none" >
+  <h1 style="color:rgb(43, 2, 19)"><b>SelfieLessAct</b></h1>
+  <h4 style="color:rgb(5, 4, 41)">This is the frontend of the Cloud Computing Assignment of the SelfieLessActs Application</h4>
 </div>
 
 
@@ -74,7 +74,7 @@ body {font-size:16px;}
   <div class="login-box">
       <div class="lb-header">
         <!-- <a class="active" id="login-box-link" >Login</a> -->
-        <h4 id="signup-box-link">Register</h4>
+        <h4 id="signup-box-link" class="heading"><b>Register</b></h4>
       </div>
       <form class="email-login">
         <div class="u-form-group">
@@ -159,13 +159,116 @@ body {font-size:16px;}
   
       <div style="text-align:center">
       <a type="submit" class="btn btn-default btn-lg" style="color:black;background-color:cyan" id="show" onclick="list_categories()">List all categories</a>
-      <div class="form-group success" id="success" style="display:none">
+      <div class="form-group success" id="list_cat" style="display:none">
         <p>list appears here</p>
       </div>
     </div>
 
 
 </div>
+
+<!-- This is for list acts -->
+<div class="w3-main " id="list_acts" style="margin-left:340px;margin-right:40px;display:none;width: 50%;height: 50%">
+  <div class="header">
+      <!-- <a class="active" id="login-box-link" >Login</a> -->
+      <h3 style="text-align:center;color:blue">Listing Acts</h3>
+    </div>
+    <form class="email-login">
+        <div class="u-form-group">
+            <input type="text" class="form-control" id="start" placeholder="Enter start index" name="start">
+        </div>
+        <div class="u-form-group">
+            <input type="text" class="form-control" id="end" placeholder="Enter end index" name="end">
+        </div>
+        <div class="u-form-group">
+          <input type="text" class="form-control" id="category_name" placeholder="Enter category name" name="category">
+      </div>
+        <div class="u-form-group">
+          <a type=submit class="btn btn-default btn-lg" onclick="list_acts()">Submit</a>
+        </div>
+        <div class="form-group success" id="remove_cat_success" style="display:none">
+          <p>Operation Successful!</p>
+        </div>
+    </form>
+
+    
+    <div style="text-align:center">
+    <!-- <a type="submit" class="btn btn-default btn-lg" style="color:black;background-color:cyan" id="show" onclick="list_acts()">List all Acts</a> -->
+    <div class="form-group success" id="list_acts_display" >
+      <p>list appears here</p>
+    </div>
+  </div>
+</div>
+
+<!-- upload an act -->
+<div class="w3-main " id="upload_act" style="margin-left:340px;margin-right:40px;display:none;width: 50%;height: 50%">
+  <div class="header">
+      <!-- <a class="active" id="login-box-link" >Login</a> -->
+      <h3 style="text-align:center;color:blue">Upload an Act</h3>
+    </div>
+    <form class="email-login">
+        <div class="u-form-group">
+          <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
+        </div>
+        <div class="u-form-group">
+          <input type="text" class="form-control" id="timestamp" placeholder="Enter timestamp" name="timestamp">
+        </div>
+        <div class="u-form-group">
+          <input type="text" class="form-control" id="caption" placeholder="Enter caption" name="caption">
+      </div>
+      <div class="u-form-group">
+        <input type="text" class="form-control" id="categoryName" placeholder="Enter category" name="category">
+      </div>
+      <div class="u-form-group">
+        <input type="file" class="form-control" id="imgB64" placeholder="Enter img" name="img">
+      </div>
+
+        <div class="u-form-group">
+          <a type=submit class="btn btn-default btn-lg" onclick="upload_acts()">Submit</a>
+        </div>
+        <div class="form-group success" id="upload_success" style="display:none">
+          <p>Operation Successful!</p>
+        </div>
+    </form>
+
+    <!-- upvote an act -->
+    <form class="email-login">
+        <h3 style="text-align:center;color:blue">Upvote an Act</h3>
+      <div class="u-form-group">
+        <input type="text" class="form-control" id="upvote_act" placeholder="enter act no to upvote" name="upvote_act">
+      </div>
+      <div class="u-form-group">
+        <a type=submit class="btn btn-default btn-lg" onclick="upvote_act()">Submit</a>
+      </div>
+      <div class="form-group success" id="upload_success" style="display:none">
+          <p>Operation Successful!</p>
+        </div>
+      </form>
+      
+    <!-- remove an act -->
+    <form class="email-login">
+        <h3 style="text-align:center;color:blue">Remove an Act</h3>
+      <div class="u-form-group">
+        <input type="text" class="form-control" id="remove_act" placeholder="remove an act" name="remove_act">
+      </div>
+      <div class="u-form-group">
+           <a type=submit class="btn btn-default btn-lg" onclick="remove_act()">Submit</a>
+         </div>
+         <div class="form-group success" id="upload_success" style="display:none">
+           <p>Operation Successful!</p>
+         </div>
+     </form>
+
+
+  </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -209,9 +312,19 @@ function p_categories() {
 	document.getElementById("body").innerHTML = document.getElementById("categories").innerHTML;
 }
 
+function p_list_acts() {
+  document.getElementById("body").innerHTML = document.getElementById("list_acts").innerHTML;
+}
+
+function p_upload_act() {
+  document.getElementById("body").innerHTML = document.getElementById("upload_act").innerHTML;
+}
+
 function p_about() {
   document.getElementById("body").innerHTML = document.getElementById("about").innerHTML;
 }
+
+
 
 
 // Modal Image Gallery

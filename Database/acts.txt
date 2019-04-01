@@ -1,1 +1,1 @@
-{"1": [], "2": []}
+{"1": {"username": "Gaja", "timestamp": "10-10-2019:10-10-10", "caption": "nature", "categoryName": "nato", "imgB64": "bWF5byBvciBtdXN0Pw=="}, "2": {"username": "Gaja", "timestamp": "10-10-2019:10-10-10", "caption": "nature", "categoryName": "nato", "imgB64": "bWF5byBvciBtdXN0Pw=="}, "3": {"username": "Gaja", "timestamp": "10-10-2019:10-10-10", "caption": "nature", "categoryName": "nato", "imgB64": "bWF5byBvciBtdXN0Pw=="}}

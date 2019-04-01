@@ -1,4 +1,13 @@
 var link="http://localhost:5000";
+var incr = (function () {
+    var a_id = 1;
+
+    return function () {
+        return a_id++;
+    }
+})();
+
+
 
 function SHA1 (msg) {
     function rotate_left(n,s) {
@@ -277,13 +286,13 @@ function SHA1 (msg) {
 
               if (this.status==200)
               {
-                  var success = document.getElementById('success');
+                  var success = document.getElementById('list_cat');
                   success.innerHTML=this.responseText
                   success.style.display="block";
               }
               else
               {
-                var success = document.getElementById('success');
+                var success = document.getElementById('list_cat');
                 success.innerHTML="Operation Not Successful";
                 success.style.display="block";
               }
@@ -293,3 +302,211 @@ function SHA1 (msg) {
       xhttp.send();
 
   }
+
+function list_acts()
+{
+    var category_name = document.getElementById("category_name").value;
+    var start = document.getElementById("start").value;
+    var end = document.getElementById("end").value;
+    
+    if(start == "" || end == ""){
+    var url = link+"/api/v1/categories/"+category_name+"/acts";
+
+    var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange=function() {
+          if(this.readyState==4){
+              console.log(this.status);
+
+              if (this.status==204)
+              {
+                  var success = document.getElementById('list_acts_display');
+                  success.innerHTML="No content"
+                  success.style.display="block";
+              }
+              else if(this.status==413)
+              {
+                var success = document.getElementById('list_acts_display');
+                success.innerHTML="Too large to display mor than 100";
+                success.style.display="block";
+              }
+              else if(this.status==200)
+              {
+                var success = document.getElementById('list_acts_display');
+                success.innerHTML=this.responseText;
+                success.style.display="block";
+              }
+          }
+      };
+      xhttp.open("GET",url,true);
+      xhttp.send();
+    }
+    else{
+        var url=link+"/api/v1/categories/"+category_name+"/acts?start="+start+"&end="+end;
+
+        var xhttp=new XMLHttpRequest();
+
+		xhttp.onreadystatechange=function() {
+	    	if (this.readyState==4){
+
+	    		if(this.status==200)
+		        {
+		        	var success = document.getElementById('list_acts_display');
+                    success.innerHTML=this.responseText;
+                    success.style.display="block";
+
+
+		        }
+		        else if(this.status==204)
+		        {
+
+                    var success = document.getElementById('list_acts_display');
+                    success.innerHTML="No content"
+                    success.style.display="block";
+
+		        }
+		        else if(this.status==413)
+		        {
+
+		        	var success = document.getElementById('list_acts_display');
+                    success.innerHTML="Too large to display mor than 100";
+                    success.style.display="block";
+
+		        }
+		        else if(this.status==405)
+		        {
+                    var success = document.getElementById('list_acts_display');
+                    success.innerHTML="Method not allowed";
+                    success.style.display="block";
+		        }
+
+	    	}
+	    };
+
+
+		xhttp.open("GET",url,true);
+	    xhttp.setRequestHeader("Content-Type","application/json");
+	    var data=JSON.stringify({});
+	    //console.log(data);
+	    xhttp.send(data);
+    }
+}
+
+
+
+
+function upload_acts()
+	{
+
+		var url=link+"/api/v1/acts";
+		//var actId=document.getElementById("actid").value;
+		var actId=incr();
+		var username=document.getElementById("username").value;
+		var timestamp=document.getElementById("timestamp").value;
+		var caption=document.getElementById("caption").value;
+		var categoryName=document.getElementById("categoryName").value;
+		//var imgB64=document.getElementById("imgB64").value;
+		var imgB64="bWF5byBvciBtdXN0Pw==";
+
+        console.log(username);
+		dict={
+			"actId":parseInt(actId),
+			"username":username,
+			"timestamp":timestamp,
+			"caption":caption,
+			"categoryName":categoryName,
+			"imgB64":imgB64
+		}
+
+        console.log(dict)
+
+		var xhttp=new XMLHttpRequest();
+
+		xhttp.onreadystatechange=function() {
+	    	if (this.readyState==4){
+
+	    		if(this.status==201)
+		        {	
+		        	console.log(this.status);
+		        	console.log("UPLOADED");
+		        	var success=document.getElementById('upload_success');
+		        	success.innerHTML="Successfully uploaded";
+		        	success.style.display="block";
+		        	success.style.position="relative";
+		        	success.style.left="40vh";
+		        }
+		        else
+		        {
+		        	console.log(this.status);
+		        	console.log("UPLOADED");
+		        	var success=document.getElementById('upload_success');
+		        	success.innerHTML="Upload UnSuccessful";
+		        	success.style.display="block";
+		        	success.style.position="relative";
+		        	success.style.left="40vh";
+		        }
+	    	}
+	    };
+
+		xhttp.open("POST",url,true);
+	    xhttp.setRequestHeader("Content-Type","application/json");
+	    var data=JSON.stringify(dict);
+	    //console.log(data);
+	    xhttp.send(data);		
+
+
+	}
+
+
+function upvote_act(){
+    var url=link+"/api/v1/acts/upvote";
+        var actId = document.getElementById("upvote_act").value;
+		console.log(actId,typeof actId);
+        // actId = parseInt(actId);
+		var xhttp=new XMLHttpRequest();
+
+		xhttp.onreadystatechange=function() {
+	    	if (this.readyState==4){
+
+	    		if(this.status==200)
+		        {	
+		        	console.log(this.status);
+		        	console.log("UPVOTED");	
+		        }
+	    	}
+	    };
+
+		xhttp.open("POST",url,true);
+	    xhttp.setRequestHeader("Content-Type","application/json");
+	    var data=JSON.stringify([parseInt(actId)]);
+	    //console.log(data);
+	    xhttp.send(data);
+}
+
+
+function remove_act() {
+    
+    var actId = document.getElementById("remove_act").value;
+    // parseInt(actId) 
+    console.log(actId,typeof actId);
+    var url=link+"/api/v1/acts/"+actId;
+
+    var xhttp=new XMLHttpRequest();
+
+    xhttp.onreadystatechange=function() {
+        if (this.readyState==4){
+
+            if(this.status==200)
+            {	
+                console.log(this.status);
+                console.log("REMOVED");	
+            }
+        }
+    };
+
+    xhttp.open("DELETE",url,true);
+    xhttp.setRequestHeader("Content-Type","application/json");
+    var data=JSON.stringify({});
+    //console.log(data);
+    xhttp.send(data);		
+
+}

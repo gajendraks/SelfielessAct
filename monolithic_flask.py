@@ -268,6 +268,7 @@ def list_acts(categoryName):
 			upvote_d = json.load(upvote_f)
 			upvote_f.close()
 			output = []
+			print(acts_list_out)
 			for actid in acts_list_out:
 				intermediate_dict = {}
 				intermediate_dict["actId"] = int(actid)

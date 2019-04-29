@@ -11,6 +11,9 @@ import time
 from flask_cors import CORS
 
 
+crash=0
+count=0
+
 def isTimeFormat(input):
     try:
 	    datetime.datetime.strptime(input[:input.find(":")], '%d-%m-%Y')
@@ -38,6 +41,8 @@ def categories():
 
 	#list all categories
 	if(request.method=='GET'):
+
+
 		if(not(os.path.exists("Database/categories.txt"))):
 			f = open("Database/categories.txt",'w')
 			f.write('{}')
@@ -339,7 +344,7 @@ def upload_act():
 		if(type(actId)==int):
 			actId = str(actId)
 		
-		url="http://52.66.205.229:8080/api/v1/users"
+		url="http://13.233.193.238:80/api/v1/users"
 		r = requests.get(url)
 		data=r.json()
 		print(data)
@@ -417,15 +422,55 @@ def upload_act():
 
 	return ('',405)
 
-# @app.route("/api/v1/check",methods = ['GET'])
-# def check():
-# 	url="http://localhost:5000/multi/10"
-# 	r = requests.get(url)
-# 	data=r.json()
 
-# 	print(data)
 
-# 	return ('',200)
+
+@app.route("/api/v1/acts/count",methods = ['GET'])
+def total_acts():
+	if(request.method=='GET'):
+		if(not(os.path.exists("Database/categories.txt"	))):
+			# print("doesnot exist")
+			l=[0]
+			return(jsonify(l),200)
+		category_f = open("Database/categories.txt",'r+')
+		cat_d={}
+		cat_d=json.load(category_f)
+		category_f.close()
+		length = sum(cat_d.values())
+		return(jsonify([length]),200)
+	else:
+		return("",405)
+
+
+@app.route("/api/v1/_count",methods=['GET'])
+def count1():
+	global crash
+	if crash==1:
+		return('',500)
+	else:
+		return(jsonify([count]),200)
+@app.route("/api/v1/_count",methods=['DELETE'])
+def reset():
+	global crash
+	if crash==1:
+		return('',500)
+	else:
+		count=0
+		return('',200)
+
+
+@app.route("/api/v1/_health",methods=['GET'])
+def _health():
+	global crash
+	if(crash==1):
+		return ('',500)
+	return ('',200)
+
+@app.route("/api/v1/_crash",methods=['POST'])
+def _crash():
+	global crash
+	crash = 1
+	return ('',200)
 
 if __name__ == '__main__':
-	app.run(debug=True,host="0.0.0.0",port=12345)
+	app.run(debug=True,host="0.0.0.0",port=80)

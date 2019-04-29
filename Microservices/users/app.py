@@ -9,6 +9,9 @@ import datetime
 import time
 from flask_cors import CORS
 
+count= 0
+crash= 0
+
 def is_sha1(maybe_sha):
     if len(maybe_sha) != 40:
         return False
@@ -17,9 +20,6 @@ def is_sha1(maybe_sha):
     except ValueError:
         return False
     return True
-
-
-
 
 app= Flask(__name__)
 CORS(app)
@@ -37,8 +37,8 @@ def users_verify():
 		# print(type(data))
 
 		#if request is other than dictionary/json format
-		if(type(data)!= dict):
-			return('request error',400)
+		# if(type(data)!= dict):
+		# 	return('request error',400)
 		#if username and password does not exist in request
 		if(("username" not in data.keys()) or ("password" not in data.keys())):
 			return ('not there',400)
@@ -110,7 +110,18 @@ def delete(username):
 
 
 
+@app.route("/api/v1/_health",methods=['GET'])
+def _health():
+	global crash
+	if(crash==1):
+		return ('',500)
+	return ('',200)
 
+@app.route("/api/v1/_crash",methods=['POST'])
+def _crash():
+	global crash
+	crash=1
+	return ('',200)
 
 if __name__ == '__main__':
-	app.run(debug=True,host="0.0.0.0")
+	app.run(debug=True,host="0.0.0.0",port=80)

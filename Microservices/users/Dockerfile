@@ -7,7 +7,7 @@ RUN pip install -U flask-cors
 
 WORKDIR /app
 COPY . /app
-EXPOSE 5000
+EXPOSE 80
 ENV TEAM_ID CC_096_101_120_121
 CMD ["python", "app.py"]
 

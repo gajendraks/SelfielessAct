@@ -10,6 +10,7 @@ import datetime
 import time
 from flask_cors import CORS
 
+user_ip = os.environ['user_ip']
 
 crash=0
 count=0
@@ -344,7 +345,7 @@ def upload_act():
 		if(type(actId)==int):
 			actId = str(actId)
 		
-		url="http://13.233.193.238:80/api/v1/users"
+		url="http://"+user_ip+":80/api/v1/users"
 		r = requests.get(url)
 		data=r.json()
 		print(data)
@@ -372,8 +373,8 @@ def upload_act():
 
 			# if(not(re.match("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",imgB64))):
 			#  	return('image is not in base64',400)
-			if(imgB64 != "bWF5byBvciBtdXN0Pw=="):
-				return('image is not in base64',400)
+			#if(imgB64 != "bWF5byBvciBtdXN0Pw=="):
+			#	return('image is not in base64',400)
 			
 			
 

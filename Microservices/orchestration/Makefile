@@ -1,5 +1,5 @@
-load-balance: ./load_balnce.py
-	python3 ./load_balance.py
+server: ./server.py
+	python3 ./server.py
 
 scale: ./autoscaling.py
 	python3 ./autoscaling.py

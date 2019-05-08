@@ -108,7 +108,7 @@ def upload_act():
 	ports = [int(y.attrs['NetworkSettings']['Ports']['80/tcp'][0]['HostPort']) for y in cli.containers.list() if re.match(r"/acts800[0-9]",y.attrs['Name'])]
 	if(request.method=='POST'):
 		in_data = request.get_json()
-		response=requests.delete(st_url+str(ports[ptr%(len(ports))])+"/api/v1/acts/",json=in_data)
+		response=requests.post(st_url+str(ports[ptr%(len(ports))])+"/api/v1/acts",json=in_data)
 		return(jsonify({}),response.status_code)
 
 @app.route("/api/v1/acts/count",methods = ['GET'])
@@ -119,7 +119,7 @@ def total_acts():
 	count+=1
 	ports = [int(y.attrs['NetworkSettings']['Ports']['80/tcp'][0]['HostPort']) for y in cli.containers.list() if re.match(r"/acts800[0-9]",y.attrs['Name'])]
 	if(request.method=='GET'):
-		response=requests.delete(st_url+str(ports[ptr%(len(ports))])+"/api/v1/acts/count")
+		response=requests.get(st_url+str(ports[ptr%(len(ports))])+"/api/v1/acts/count")
 		ret = response.json()
 		return(jsonify(ret),response.status_code)
 

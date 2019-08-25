@@ -3,7 +3,7 @@ cloud computing project
 
 
 Implemented a custom container orchestrator engine that will:
-
+
 There are three parts in orchestration:
 ◦ server.py (for load-balancing)
 ▪ redirects request to containers in round robin fashion
@@ -21,19 +21,13 @@ load increases above a certain threshold.
 check API every 1min, and if a container is found to be
 unhealthy, stop the container and start a new one to
 replace it.
-
-New
-
-
-
-
-container gets created with parameters
+
+New container gets created with parameters
 name = acts+port_no
 volume attached = database
 detached mode
 remove=True gets removed from storage when process gets
-killed
- environment = [user_ip] environment variable for user ip as it
+killed environment = [user_ip] environment variable for user ip as it
 is not elastic
 ➢ How to run
 ➢ Build docker in both containers

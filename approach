@@ -1,0 +1,33 @@
+Phase I -- Setting up and front end
+	- Cloud based web app
+	- Website for selflessact on AWS EC2 instance
+		- Create AWS EC2 instance .
+		- Install webserver on this instance.
+		- Create web page.
+		- Run the server.
+		- View this from a browser.
+
+Phase II 
+	- Adding features to front end and support for REST API.
+	- Completed backend using python and flask.
+	- Implementation of API's in python FLASK (JSON Interaction).
+	
+Phase III
+	- Moving monolithic web app to microservice
+		- Divided into user and acts service and put two separate instance.
+		- Embedding two microservices(or web servers) inside Docker container within the instance.
+		- We used 'alphine:3.7' image in docker container.
+		- And published docker images in docker.hub .
+		
+Phase IV
+	- Load balancing for two services
+		- Put two microservices into two different instances and accessible from public IP and port.
+		- Using path based routing in AWS loadbalancer.
+
+Phase V
+	- Container Orchestration
+		- Health check
+		- Crash server
+		- Load balancer
+		- Fault tolerance
+		- Autoscaling
